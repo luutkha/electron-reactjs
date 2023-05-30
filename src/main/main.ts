@@ -8,14 +8,45 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import Store from 'electron-store';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import {
+  getWinSetting,
+  saveBounds,
+  isMaximized,
+  saveMaximized,
+} from './controller/setting';
+import {
+  search,
+  getInfo,
+  downloadManga,
+  getImageLinks,
+} from './controller/crawl';
+import {
+  mangaList,
+  loadList,
+  loadImages,
+  openFolder,
+} from './controller/local';
+import { IMangaDownload, IMangaLocal } from '../interfaces';
 
-class AppUpdater {
+const store = new Store();
+
+ipcMain.on('electron-store-get', async (event, val) => {
+  event.returnValue = store.get(val);
+});
+ipcMain.on('electron-store-set', async (_event, key, val) => {
+  store.set(key, val);
+});
+
+export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
@@ -31,15 +62,50 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
+// Crawl
+ipcMain.handle('search', async (_handler, mangaName) => {
+  return search(mangaName);
+});
+
+ipcMain.handle('getInfo', (_handler, mangaLink: string) => {
+  return getInfo(mangaLink);
+});
+
+ipcMain.handle('getImages', (_handler, mangaChapter: IMangaDownload) => {
+  return getImageLinks(mangaChapter.url);
+});
+
+ipcMain.handle('download', (_handler, mangaChapter: IMangaDownload) => {
+  return downloadManga(mangaChapter, store.get('downloadFolder') as string);
+});
+
+// Local
+ipcMain.handle('openFolder', async (_handler) => openFolder());
+ipcMain.handle('listManga', (_handler, dir: string) => {
+  return new Promise<IMangaLocal[]>((resolve) => {
+    resolve(mangaList(dir));
+  });
+});
+ipcMain.handle('loadList', () => {
+  return loadList();
+});
+ipcMain.handle(
+  'loadImages',
+  async (_handler, name: string, chapter: string) => {
+    const savePath = (await store.get('downloadFolder')) as string;
+    return loadImages(savePath, name, chapter);
+  }
+);
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
 }
 
-const isDebug =
+const isDevelopment =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
-if (isDebug) {
+if (isDevelopment) {
   require('electron-debug')();
 }
 
@@ -57,7 +123,7 @@ const installExtensions = async () => {
 };
 
 const createWindow = async () => {
-  if (isDebug) {
+  if (isDevelopment) {
     await installExtensions();
   }
 
@@ -69,19 +135,26 @@ const createWindow = async () => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
+  const bounds = getWinSetting();
+
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: bounds[0],
+    height: bounds[1],
     icon: getAssetPath('icon.png'),
     webPreferences: {
-      preload: app.isPackaged
-        ? path.join(__dirname, 'preload.js')
-        : path.join(__dirname, '../../.erb/dll/preload.js'),
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
     },
   });
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
+  if (isMaximized()) {
+    mainWindow.maximize();
+  }
+
+  mainWindow.on('maximize', () => saveMaximized(true));
+  mainWindow.on('unmaximize', () => saveMaximized(false));
 
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
@@ -94,6 +167,8 @@ const createWindow = async () => {
     }
   });
 
+  mainWindow.on('resized', () => saveBounds(mainWindow?.getSize()));
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -102,9 +177,9 @@ const createWindow = async () => {
   menuBuilder.buildMenu();
 
   // Open urls in the user's browser
-  mainWindow.webContents.setWindowOpenHandler((edata) => {
-    shell.openExternal(edata.url);
-    return { action: 'deny' };
+  mainWindow.webContents.on('new-window', (event, url) => {
+    event.preventDefault();
+    shell.openExternal(url);
   });
 
   // Remove this if your app does not use auto updates

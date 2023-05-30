@@ -1,0 +1,23 @@
+.bg-component--dark {
+  background-image: linear-gradient(
+    to right top,
+    #0f1325,
+    #111528,
+    #13182a,
+    #151a2d,
+    #171c30,
+    #191e32,
+    #1a1f35,
+    #1c2137,
+    #1e233a,
+    #1f243c,
+    #21263f,
+    #232842
+  );
+  box-shadow: -30px 19px 65px -34px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: -30px 19px 65px -34px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -30px 19px 65px -34px rgba(0, 0, 0, 0.75);
+  border-radius: 10px;
+
+ 
+}

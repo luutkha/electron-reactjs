@@ -5,6 +5,7 @@ import {
   BrowserWindow,
   MenuItemConstructorOptions,
 } from 'electron';
+import { openFolder } from './controller/local';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -198,8 +199,11 @@ export default class MenuBuilder {
         label: '&File',
         submenu: [
           {
-            label: '&Open',
+            label: '&Open Manga Folder',
             accelerator: 'Ctrl+O',
+            click: () => {
+              openFolder();
+            },
           },
           {
             label: '&Close',

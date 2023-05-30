@@ -1,0 +1,22 @@
+@import './base/base';
+
+
+/* responsive */
+
+/*pages*/
+@import './pages/welcome';
+@import './pages/premium';
+
+
+/*variables*/
+
+@import './variables/variables';
+/* component */
+@import './components/leftMenu';
+@import './components/mainContent';
+@import './components/card';
+@import './components/modal';
+@import './components/form';
+@import './components/button';
+@import './components/playBar';
+@import './components/toast';

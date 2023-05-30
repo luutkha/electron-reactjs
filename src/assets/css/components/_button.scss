@@ -1,0 +1,150 @@
+.btn__primary {
+  background-image: linear-gradient(
+    to right top,
+    #ff2c5a,
+    #ff4661,
+    #ff5a68,
+    #ff6a70,
+    #ff7979
+  );
+  padding: 0em 2em 0em 2em;
+  min-width: 150px;
+  color: 'white';
+}
+.btn__blue {
+  padding: 0.75em 2em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  font-weight: bold;
+  color: white;
+  background-color: #fff;
+  border: none;
+  font-size: 100%;
+  border-radius: 45px;
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  background-color: #3085f3;
+
+  &__spacing {
+    letter-spacing: 2.5px;
+  }
+  &:hover {
+    transform: translateY(-7px);
+  }
+}
+.btn__long__spacing {
+  text-transform: uppercase;
+
+  margin-top: 1em;
+  font-weight: bold;
+  padding: 0.75em 4em 0.75em 4em;
+  min-width: 500px;
+  color: white;
+  background-color: #fff;
+  border: none;
+  font-size: 100%;
+  border-radius: 45px;
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  background-color: #3085f3;
+  letter-spacing: 2.5px;
+
+  &:hover {
+    transform: translateY(-7px);
+  }
+}
+.btn__nonBg {
+  padding: 1em 2em;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  color: white;
+  background-color: transparent;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  &:hover {
+    color: #fff;
+    transform: translateY(-7px);
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+
+  &.__spacing {
+    letter-spacing: 2.5px;
+  }
+}
+
+.btn__nonBg__spacing {
+  padding: 0.75em 4em 0.75em 4em;
+  min-width: 500px;
+  margin-top: 1em;
+  font-size: 100%;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: bold;
+  color: #616467;
+  background-color: transparent;
+  border: #616467;
+  border-width: 2px;
+  border-radius: 45px;
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  border-style: solid;
+  letter-spacing: 2.5px;
+  &:hover {
+    color: #fff;
+    background-color: #616467;
+    transform: translateY(-7px);
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+}
+
+.btn__blue__nonPadding {
+  padding: 0.75em 2em;
+
+  font-weight: bold;
+  color: white;
+  background-color: #fff;
+  border: none;
+  font-size: 100%;
+  border-radius: 45px;
+
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  background-color: #3085f3;
+
+  &__spacing {
+    letter-spacing: 2.5px;
+  }
+  &:hover {
+    transform: translateY(-7px);
+  }
+}
+
+.btn {
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 13px;
+  border-radius: 100px;
+  transition: all 0.3s ease 0s;
+  color: white;
+  cursor: pointer;
+  outline: none;
+  &:hover {
+    transform: translateY(-7px);
+    color: white;
+  }
+}
